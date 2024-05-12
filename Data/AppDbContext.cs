@@ -15,13 +15,10 @@ public class AppDbContext : DbContext
     {
         
         optionsBuilder.UseSqlite("Data Source=C:/Users/MalithiAbayadeera/source/repos/Xternship/Database/Xternship.db");
-
-
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-       
         modelBuilder.Entity<User>()
             .ToTable("Users"); 
     }

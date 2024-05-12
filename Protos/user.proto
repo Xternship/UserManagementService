@@ -8,7 +8,7 @@ package user;
 service UserService {
  rpc CreateUser (CreateUserRequest) returns (CreateUserResponse);
   rpc UpdateUserRole (UpdateUserRoleRequest) returns (UpdateUserRoleResponse);
-  rpc InviteUser (InviteUserRequest) returns (InviteUserResponse);
+  
 }
 
 enum UserRole {
@@ -27,6 +27,7 @@ message CreateUserRequest {
 
 message CreateUserResponse {
   string Message = 1;
+  string Token = 2;
 }
 
 message UpdateUserRoleRequest {
@@ -38,12 +39,4 @@ message UpdateUserRoleResponse {
   string Message = 1;
 }
 
-message InviteUserRequest {
-  string Email = 1;
-  UserRole Role = 2;
-}
-
-message InviteUserResponse {
-  string Message = 1;
-}
 

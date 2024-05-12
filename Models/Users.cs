@@ -9,8 +9,11 @@ namespace UserManagementService.Models
         public string? UserName { get; set; }
         public string? Password { get; set; }
         public UserRole Role { get; set; }
+        public string? PasswordHash { get; set; } // Store hashed password instead of plain text
+        public string? RefreshToken { get; set; } // Optional for refresh token functionality
+        public bool IsActive { get; set; } // Track user account status
 
-     
+
         public User() { }
        
     }
