@@ -49,12 +49,5 @@ public class UserManageService : UserService.UserServiceBase
         });
     }
 
-    public override Task<InviteUserResponse> InviteUser(InviteUserRequest request, ServerCallContext context)
-    {
-        // Your implementation logic for inviting a user
-        return Task.FromResult(new InviteUserResponse
-        {
-            Message = "Invitation sent successfully"
-        });
-    }
+   
 }
