@@ -1,0 +1,49 @@
+syntax = "proto3";
+
+option csharp_namespace = "UserManagementService";
+
+package user; 
+
+// The greeting service definition.
+service UserService {
+ rpc CreateUser (CreateUserRequest) returns (CreateUserResponse);
+  rpc UpdateUserRole (UpdateUserRoleRequest) returns (UpdateUserRoleResponse);
+  rpc InviteUser (InviteUserRequest) returns (InviteUserResponse);
+}
+
+enum UserRole {
+    ADMIN = 0;
+    INTERN = 1;
+    EVALUATOR = 2;
+    MENTOR = 3;
+    MANAGEMENT = 4;
+}
+
+message CreateUserRequest {
+  string UserName = 1;
+  string Password = 2;
+  UserRole Role = 3;
+}
+
+message CreateUserResponse {
+  string Message = 1;
+}
+
+message UpdateUserRoleRequest {
+  string UserName = 1;
+  UserRole NewRole = 2;
+}
+
+message UpdateUserRoleResponse {
+  string Message = 1;
+}
+
+message InviteUserRequest {
+  string Email = 1;
+  UserRole Role = 2;
+}
+
+message InviteUserResponse {
+  string Message = 1;
+}
+
