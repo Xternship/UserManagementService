@@ -3,20 +3,19 @@ using UserManagementService.Data;
 using UserManagementService.Models;
 namespace UserManagementService.Services;
 
-public class UserManageService : UserService.UserServiceBase
+public class UserManageService : UserService.UserServiceBase 
 {
     private readonly AppDbContext _context;
-    private readonly TokenService _tokenService;
+ 
 
-    public UserManageService(AppDbContext context, TokenService tokenService)
+    public UserManageService(AppDbContext context)
     {
         _context = context;
-        _tokenService = tokenService;
+      
     }
 
     public override async Task<CreateUserResponse> CreateUser(CreateUserRequest request, ServerCallContext context)
     {
-        // Hash password before saving
         var hashedPassword = BCrypt.Net.BCrypt.HashPassword(request.Password);
 
         var user = new User
@@ -24,19 +23,18 @@ public class UserManageService : UserService.UserServiceBase
             UserName = request.UserName,
             PasswordHash = hashedPassword,
             Role = (Models.UserRole)request.Role,
-            IsActive = true // Set user to active by default
+            IsActive = true 
         };
 
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
 
-        // Generate JWT token upon successful creation
-        var token = _tokenService.GenerateToken(user);
+  
 
         return new CreateUserResponse
         {
             Message = "User created successfully",
-            Token = token 
+           
         };
     }
 

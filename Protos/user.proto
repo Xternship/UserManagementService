@@ -4,11 +4,9 @@ option csharp_namespace = "UserManagementService";
 
 package user; 
 
-// The greeting service definition.
 service UserService {
  rpc CreateUser (CreateUserRequest) returns (CreateUserResponse);
-  rpc UpdateUserRole (UpdateUserRoleRequest) returns (UpdateUserRoleResponse);
-  
+ rpc UpdateUserRole (UpdateUserRoleRequest) returns (UpdateUserRoleResponse);  
 }
 
 enum UserRole {
