@@ -1,51 +1,95 @@
 using Grpc.Core;
 using UserManagementService.Data;
+using UserManagementService.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using UserManagementService.Models;
-namespace UserManagementService.Services;
+using System.Threading.Tasks;
+using EmailService.Interfaces;
 
-public class UserManageService : UserService.UserServiceBase 
+namespace UserManagementService.Services
 {
-    private readonly AppDbContext _context;
- 
-
-    public UserManageService(AppDbContext context)
+    public class UserManageService : UserService.UserServiceBase
     {
-        _context = context;
-      
-    }
+        private readonly AppDbContext _context;
+        private readonly IEmailService _emailService;
 
-    public override async Task<CreateUserResponse> CreateUser(CreateUserRequest request, ServerCallContext context)
-    {
-        var hashedPassword = BCrypt.Net.BCrypt.HashPassword(request.Password);
-
-        var user = new User
+        public UserManageService(AppDbContext context, IEmailService emailService)
         {
-            UserName = request.UserName,
-            PasswordHash = hashedPassword,
-            Role = (Models.UserRole)request.Role,
-            IsActive = true 
-        };
+            _context = context;
+            _emailService = emailService;
+        }
 
-        _context.Users.Add(user);
-        await _context.SaveChangesAsync();
-
-  
-
-        return new CreateUserResponse
+        public override async Task<CreateUserResponse> CreateUser(CreateUserRequest request, ServerCallContext context)
         {
-            Message = "User created successfully",
-           
-        };
-    }
+            var isAdmin = CheckIfCurrentUserIsAdmin();
 
-    public override Task<UpdateUserRoleResponse> UpdateUserRole(UpdateUserRoleRequest request, ServerCallContext context)
-    {
-        // Your implementation logic for updating user role
-        return Task.FromResult(new UpdateUserRoleResponse
+            if (!isAdmin)
+            {
+                return new CreateUserResponse
+                {
+                    Message = "Only admins can register new users."
+                };
+            }
+
+            var password = GenerateRandomPassword();
+            var hashedPassword = BCrypt.Net.BCrypt.HashPassword(password);
+
+            var user = new User
+            {
+                UserName = request.UserName,
+                Email = request.Email,
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+                PasswordHash = hashedPassword,
+                Role = (Models.UserRole)request.Role,
+                IsActive = true
+            };
+
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+
+            // Send the password via email
+            await _emailService.SendPasswordEmailAsync(user.Email, password);
+
+            return new CreateUserResponse
+            {
+                Message = "User created successfully"
+            };
+        }
+
+        private bool CheckIfCurrentUserIsAdmin()
         {
-            Message = "User role updated successfully"
-        });
-    }
+            // Implement actual admin check logic here
+            return true;
+        }
 
-   
+        public override async Task<UpdateUserRoleResponse> UpdateUserRole(UpdateUserRoleRequest request, ServerCallContext context)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == request.UserName);
+            if (user == null)
+            {
+                return new UpdateUserRoleResponse
+                {
+                    Message = "User not found"
+                };
+            }
+
+            user.Role = (Models.UserRole)request.NewRole;
+            await _context.SaveChangesAsync();
+
+            return new UpdateUserRoleResponse
+            {
+                Message = "User role updated successfully"
+            };
+        }
+
+        private string GenerateRandomPassword()
+        {
+            // Implement a method to generate a secure random password
+            var random = new Random();
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            return new string(Enumerable.Repeat(chars, 12)
+                .Select(s => s[random.Next(s.Length)]).ToArray());
+        }
+    }
 }

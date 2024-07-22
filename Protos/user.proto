@@ -2,30 +2,31 @@ syntax = "proto3";
 
 option csharp_namespace = "UserManagementService";
 
-package user; 
+package user;
 
 service UserService {
- rpc CreateUser (CreateUserRequest) returns (CreateUserResponse);
- rpc UpdateUserRole (UpdateUserRoleRequest) returns (UpdateUserRoleResponse);  
+  rpc CreateUser (CreateUserRequest) returns (CreateUserResponse);
+  rpc UpdateUserRole (UpdateUserRoleRequest) returns (UpdateUserRoleResponse);
 }
 
 enum UserRole {
-    ADMIN = 0;
-    INTERN = 1;
-    EVALUATOR = 2;
-    MENTOR = 3;
-    MANAGEMENT = 4;
+  ADMIN = 0;
+  INTERN = 1;
+  EVALUATOR = 2;
+  MENTOR = 3;
+  MANAGEMENT = 4;
 }
 
 message CreateUserRequest {
   string UserName = 1;
-  string Password = 2;
-  UserRole Role = 3;
+  string Email = 2;
+  string FirstName = 3;
+  string LastName = 4;
+  UserRole Role = 5;
 }
 
 message CreateUserResponse {
   string Message = 1;
-  string Token = 2;
 }
 
 message UpdateUserRoleRequest {
@@ -36,5 +37,3 @@ message UpdateUserRoleRequest {
 message UpdateUserRoleResponse {
   string Message = 1;
 }
-
-

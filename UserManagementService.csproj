@@ -16,6 +16,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.4" />
     <PackageReference Include="microsoft.aspnetcore.grpc.jsontranscoding" Version="8.0.4" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.7" />
     <PackageReference Include="microsoft.entityFrameworkCore.design" Version="8.0.4">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
@@ -29,6 +30,12 @@
 
   <ItemGroup>
     <Folder Include="Google\api\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="EmailService">
+      <HintPath>..\EmailService\bin\Debug\net8.0\EmailService.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>
